@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: fastjson-1.2.50.jar bcprov-jdk15on-1.62.jar alipay-sdk-java-
+ 4.10.111.ALL.jar commons-logging-1.1.1.jar
+
