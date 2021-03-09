@@ -18,4 +18,5 @@ public class WxpayRequest {
     //private String signType;
     private WXPayConstants.SignType signType=WXPayConstants.SignType.HMACSHA256;
     private String attach="";
+    private String timeExpire="";
 }

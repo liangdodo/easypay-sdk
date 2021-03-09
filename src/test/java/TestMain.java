@@ -1,3 +1,4 @@
+import com.alibaba.fastjson.JSON;
 import com.nossiac.jx.easypay.domain.*;
 import com.nossiac.jx.easypay.enums.EasyPayTypeEnum;
 import com.nossiac.jx.easypay.service.EasyPayService;
@@ -55,6 +56,7 @@ public class TestMain {
         easyPayRequest.setBody("附加内容");//附加内容
         easyPayRequest.setOpenid("xxx");//微信JsApi等支付时必传
         easyPayRequest.setProductId("xxx");//微信Native支付时必传
+        easyPayRequest.setTimeout(600);//设置超时时间
         easyPayRequest.setReturnUrl("http://xxxxx.html");//支付宝网页支付付款完后要跳转到的的页面URL
         easyPayService.setEasyPayRequest(easyPayRequest);//设置请求数据对象
 
@@ -64,8 +66,7 @@ public class TestMain {
          * *************************************************************************************************************
          */
         easyPayService.setEasyPayType(EasyPayTypeEnum.WXPAY_NATIVE);//设置支付方式
-        easyPayService.pay();//发起支付
-        Object obj= easyPayService.pay();//发起支付
-        System.out.println(obj);
+        Object obj = easyPayService.pay();//发起支付
+        System.out.println(JSON.toJSONString(obj));
     }
 }

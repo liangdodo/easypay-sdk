@@ -1,17 +1,12 @@
 package com.nossiac.jx.easypay.service.impl;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
-import com.alipay.api.AlipayResponse;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.*;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.*;
-import com.alipay.api.response.AlipayTradeAppPayResponse;
-import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
-import com.alipay.api.response.AlipayTradeQueryResponse;
-import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.alipay.api.response.*;
 import com.nossiac.jx.easypay.domain.*;
-import com.nossiac.jx.easypay.exception.EasyPayException;
 import com.nossiac.jx.easypay.service.AlipayService;
 
 import java.util.HashMap;
@@ -126,6 +121,26 @@ public class AlipayServiceImpl implements AlipayService {
 
         request.setReturnUrl(alipayPayRequest.getReturnUrl());
         return alipayClient.pageExecute(request).getBody();
+    }
+
+    /**
+     * 支付宝二维码支付
+     * @param alipayPayRequest
+     * @return
+     * @throws AlipayApiException
+     */
+    public AlipayTradePrecreateResponse qrCodePay(AlipayRequest alipayPayRequest) throws AlipayApiException{
+        AlipayTradePrecreateRequest request=new AlipayTradePrecreateRequest();
+        AlipayTradePrecreateModel   model =new AlipayTradePrecreateModel();
+        model.setBody(alipayPayRequest.getBody());
+        model.setSubject(alipayPayRequest.getSubject());
+        model.setOutTradeNo(alipayPayRequest.getOutTradeNo());
+        model.setQrCodeTimeoutExpress(alipayPayRequest.getTimeoutExpress());
+        model.setTotalAmount(String.valueOf(alipayPayRequest.getTotalAmount()));
+        request.setBizModel(model);
+        request.setNotifyUrl(alipayPayRequest.getNotifyUrl());
+        AlipayTradePrecreateResponse response = alipayClient.execute(request);
+        return response;
     }
 
     public boolean notifyCheck(Map<String,String> requestParams) throws AlipayApiException{
@@ -244,5 +259,34 @@ public class AlipayServiceImpl implements AlipayService {
         model.setOutRequestNo(alipayQuery.getOutRequestNo());
         request.setBizModel(model);
         return alipayClient.execute(request);
+    }
+
+    public String secondsToTimeoutExpress(int timeout){
+        int day     = (int)(timeout/3600/24);
+        int hours   = (int)((timeout-day*3600*24)/3600);
+        int minute  = (int)((timeout-day*3600*24-hours*3600)/60);
+        //int seconds = (long)(timeout-day*3600*24-hours*3600-minute*60);
+
+        if(0==timeout || timeout < 60){
+            return "1c";
+        }
+
+        if(day > 15){
+            day=15;
+        }
+
+        if(day > 0){
+            return day+"d";
+        }
+
+        if(hours > 0){
+            return hours+"h";
+        }
+
+        if(minute > 0){
+            return minute+"m";
+        }
+
+        return "";
     }
 }

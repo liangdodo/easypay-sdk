@@ -11,4 +11,5 @@ public class EasyPayRequest {
     private String productId="";
     private String notifyUrl="";
     private String returnUrl="";
+    private int timeout=600;//超时时间，单位（秒）
 }

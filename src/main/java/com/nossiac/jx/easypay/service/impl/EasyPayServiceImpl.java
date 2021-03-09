@@ -1,11 +1,9 @@
 package com.nossiac.jx.easypay.service.impl;
 
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayResponse;
 import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nossiac.jx.easypay.domain.*;
 import com.nossiac.jx.easypay.enums.EasyPayPlatformEnum;
 import com.nossiac.jx.easypay.enums.EasyPayTypeEnum;
@@ -87,6 +85,7 @@ public class EasyPayServiceImpl implements EasyPayService {
             wxpayRequest.setBody(easyPayRequest.getSubject());
             wxpayRequest.setAttach(easyPayRequest.getBody());
             wxpayRequest.setNotifyUrl(easyPayRequest.getNotifyUrl());
+            wxpayRequest.setTimeExpire(wxpayService.secondsToTimeExpire(easyPayRequest.getTimeout()));//设置超时时间
 
             try {
                 //Native支付
@@ -122,7 +121,7 @@ public class EasyPayServiceImpl implements EasyPayService {
             alipayRequest.setOutTradeNo(easyPayRequest.getTradeNo());//订单号
             alipayRequest.setTotalAmount(easyPayRequest.getAmount());//金额
             alipayRequest.setSubject(easyPayRequest.getSubject());//标题
-            alipayRequest.setTimeoutExpress("20m");//超时时间
+            alipayRequest.setTimeoutExpress(alipayService.secondsToTimeoutExpress(easyPayRequest.getTimeout()));//超时时间
             alipayRequest.setBody(easyPayRequest.getBody());//内容
 
             try {
@@ -141,6 +140,11 @@ public class EasyPayServiceImpl implements EasyPayService {
                 if (easyPayType == EasyPayTypeEnum.ALIPAY_WAP) {
                     alipayRequest.setReturnUrl(easyPayRequest.getReturnUrl());
                     return alipayService.wapPay(alipayRequest);
+                }
+
+                //二维码支付
+                if(easyPayType == EasyPayTypeEnum.ALIPAY_QRCODE){
+                    return alipayService.qrCodePay(alipayRequest);
                 }
 
             }catch (AlipayApiException e){

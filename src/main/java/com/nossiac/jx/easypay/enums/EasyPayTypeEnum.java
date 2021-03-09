@@ -7,7 +7,8 @@ public enum EasyPayTypeEnum {
     ALIPAY_APP("alipay_app", EasyPayPlatformEnum.ALIPAY, "支付宝app支付"),
     ALIPAY_PAGE("alipay_page", EasyPayPlatformEnum.ALIPAY, "支付宝page支付"),
     ALIPAY_WAP("alipay_wap", EasyPayPlatformEnum.ALIPAY, "支付宝wap支付"),
-    //ALIPAY_H5("alipay_h5", EasyPayPlatformEnum.ALIPAY, "支付宝统一下单(h5)"),
+    ALIPAY_QRCODE("alipay_qrcode",EasyPayPlatformEnum.ALIPAY,"支付宝二维码支付"),
+
     WXPAY_JSAPI("JSAPI", EasyPayPlatformEnum.WXPAY, "微信公众账号/小程序支付"),
     WXPAY_MWEB("MWEB", EasyPayPlatformEnum.WXPAY, "微信H5支付"),
     WXPAY_NATIVE("NATIVE", EasyPayPlatformEnum.WXPAY, "微信Native支付"),

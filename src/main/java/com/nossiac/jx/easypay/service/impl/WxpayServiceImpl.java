@@ -6,9 +6,7 @@ import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class WxpayServiceImpl implements WxpayService {
     private WxpayConfig wxpayConfig;
@@ -53,6 +51,8 @@ public class WxpayServiceImpl implements WxpayService {
         data.put("fee_type", wxpayRequest.getFeeType());
         data.put("total_fee", String.valueOf(totalFee));
         data.put("attach",wxpayRequest.getAttach());
+        data.put("time_start",secondsToTimeExpire(0));
+        data.put("time_expire",wxpayRequest.getTimeExpire());
         //data.put("spbill_create_ip", wxpayRequest.getSpbillCreateIp());
 
         if(!wxpayRequest.getNotifyUrl().isEmpty()) {
@@ -206,5 +206,19 @@ public class WxpayServiceImpl implements WxpayService {
         }
 
         return wxPay.refundQuery(data);
+    }
+
+    public String secondsToTimeExpire(int timeout){
+        Date date = new Date();
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(date);
+
+        gc.add(GregorianCalendar.SECOND,timeout);
+        date = gc.getTime();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        //sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String res=sdf.format(date);
+        return res;
     }
 }

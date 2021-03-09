@@ -13,4 +13,5 @@ public interface WxpayService {
     public Map<String, String> refund(WxpayRefund wxpayRefund) throws Exception;
     public Map<String,String> orderQuery(WxpayQuery wxpayQuery) throws Exception;
     public Map<String,String> refundQuery(WxpayQuery wxpayQuery) throws Exception;
+    public String secondsToTimeExpire(int timeout);
 }
