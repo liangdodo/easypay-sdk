@@ -138,7 +138,13 @@ public class AlipayServiceImpl implements AlipayService {
         model.setQrCodeTimeoutExpress(alipayPayRequest.getTimeoutExpress());
         model.setTotalAmount(String.valueOf(alipayPayRequest.getTotalAmount()));
         request.setBizModel(model);
-        request.setNotifyUrl(alipayPayRequest.getNotifyUrl());
+
+        if(!alipayPayRequest.getNotifyUrl().isEmpty()){
+            request.setNotifyUrl(alipayPayRequest.getNotifyUrl());
+        }else{
+            request.setNotifyUrl(alipayConfig.getNotifyUrl());
+        }
+
         AlipayTradePrecreateResponse response = alipayClient.execute(request);
         return response;
     }

@@ -5,7 +5,7 @@
 
     <artifactId>easypay-sdk</artifactId>
     <groupId>com.nossiac.jx</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-RELEASES</version>
     <modelVersion>4.0.0</modelVersion>
 
     <dependencies>
@@ -14,6 +14,7 @@
             <artifactId>alipay-sdk-java</artifactId>
             <version>4.10.111.ALL</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -60,5 +61,10 @@
         </plugins>
     </build>
 
-
+    <distributionManagement>
+        <repository>
+            <id>easypay-sdk-release</id>
+            <url>http://nexus.kijk.top:7001/content/repositories/easypay-sdk-release</url>
+        </repository>
+    </distributionManagement>
 </project>
