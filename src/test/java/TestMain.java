@@ -32,6 +32,7 @@ public class TestMain {
         wxpayConfig.setSignType(WXPayConstants.SignType.HMACSHA256);//签名方式
         wxpayConfig.setNotifyUrl("异步通知URL");
 
+
         /**
          * *************************************************************************************************************
          * 2、创建easyPayService对象
@@ -49,11 +50,11 @@ public class TestMain {
          */
 
         EasyPayRequest easyPayRequest = new EasyPayRequest();
-        easyPayRequest.setTradeNo("12345678943543543577");//订单号
+        easyPayRequest.setTradeNo("3130075961234343235");//订单号
         easyPayRequest.setAmount(0.01F);//支付金额
         easyPayRequest.setSubject("测试支付");//支付标题
         easyPayRequest.setBody("附加内容");//附加内容
-        easyPayRequest.setOpenid("xxxxxx");//微信JsApi等支付时必传
+        easyPayRequest.setOpenid("xxx");//微信JsApi等支付时必传
         easyPayRequest.setProductId("xxx");//微信Native支付时必传
         easyPayRequest.setTimeout(600);//设置超时时间
         easyPayRequest.setReturnUrl("http://xxxxx.html");//支付宝网页支付付款完后要跳转到的的页面URL

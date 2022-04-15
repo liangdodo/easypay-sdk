@@ -4,6 +4,7 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.github.wxpay.sdk.WXPayUtil;
 import com.nossiac.jx.easypay.domain.*;
 import com.nossiac.jx.easypay.enums.EasyPayPlatformEnum;
 import com.nossiac.jx.easypay.enums.EasyPayTypeEnum;
@@ -14,6 +15,9 @@ import com.nossiac.jx.easypay.service.WxpayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.Map;
 
 public class EasyPayServiceImpl implements EasyPayService {
@@ -103,7 +107,32 @@ public class EasyPayServiceImpl implements EasyPayService {
                 //公众号/小程序支付
                 if (easyPayType == EasyPayTypeEnum.WXPAY_JSAPI) {
                     wxpayRequest.setOpenid(easyPayRequest.getOpenid());
-                    return wxpayService.jsApiPay(wxpayRequest);
+                    Map<String, String> resMap = wxpayService.jsApiPay(wxpayRequest);
+
+                    if (resMap == null) {
+                        return null;
+                    }
+
+                    WxpayJsApi wxpayJsApi = new WxpayJsApi();
+                    wxpayJsApi.setAppId(resMap.get("appid"));
+                    wxpayJsApi.setNonceStr(resMap.get("nonce_str"));
+                    String packAge = String.format("prepay_id=%s", resMap.get("prepay_id"));
+                    wxpayJsApi.setPackAge(packAge);
+
+                    ZoneId zone = ZoneId.systemDefault();
+                    LocalDateTime dateTime = LocalDateTime.now();
+                    wxpayJsApi.setTimestamp(dateTime.atZone(zone).toInstant().getEpochSecond());
+                    wxpayJsApi.setSignType(wxpayRequest.getSignType());
+
+                    Map<String, String> signMap = new HashMap<>();
+                    signMap.put("appId", wxpayJsApi.getAppId());
+                    signMap.put("timeStamp", String.valueOf(wxpayJsApi.getTimestamp()));
+                    signMap.put("nonceStr", wxpayJsApi.getNonceStr());
+                    signMap.put("package", wxpayJsApi.getPackAge());
+                    signMap.put("signType", wxpayJsApi.getSignType().toString());
+                    String paySign = WXPayUtil.generateSignature(signMap, wxpayService.getWxpayConfig().getKey(), wxpayJsApi.getSignType());
+                    wxpayJsApi.setPaySign(paySign);
+                    return wxpayJsApi;
                 }
 
                 //H5支付
