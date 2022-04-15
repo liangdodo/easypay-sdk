@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class AlipayQuery {
-    private String outTradeNo="";
-    private String tradeNo="";
-    private String outRequestNo="";
+    private String outTradeNo = "";
+    private String tradeNo = "";
+    private String outRequestNo = "";
 }

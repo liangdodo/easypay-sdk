@@ -9,5 +9,5 @@ public class WxpayRefund {
     private String outRefundNo = "";//商户退款单号
     private float totalFee = 0.00F;//订单金额
     private float refundFee = 0.00F;//退款金额
-    private String refundDesc="";//退款原因
+    private String refundDesc = "";//退款原因
 }

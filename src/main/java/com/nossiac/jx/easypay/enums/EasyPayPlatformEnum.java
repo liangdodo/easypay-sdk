@@ -1,7 +1,7 @@
 package com.nossiac.jx.easypay.enums;
 
 public enum EasyPayPlatformEnum {
-    UNKNOWN("unknown","未知"),
+    UNKNOWN("unknown", "未知"),
     ALIPAY("alipay", "支付宝"),
     WXPAY("wxpay", "微信");
 
@@ -16,6 +16,7 @@ public enum EasyPayPlatformEnum {
     public String getCode() {
         return this.code;
     }
+
     public String getName() {
         return this.name;
     }

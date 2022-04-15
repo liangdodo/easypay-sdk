@@ -12,31 +12,43 @@ import java.io.InputStream;
 public class WxpayConfig extends WXPayConfig {
 
     private byte[] certData;
-    private String appID="";
-    private String mchID="";
-    private String key="";
-    private String certPath="";
-    private String notifyUrl="";
+    private String appID = "";
+    private String mchID = "";
+    private String key = "";
+    private String certPath = "";
+    private String notifyUrl = "";
     private WXPayConstants.SignType signType;
-    private boolean sandBox=false;
+    private boolean sandBox = false;
 
-    public WxpayConfig(){
+    public WxpayConfig() {
 
     }
 
-    public String getAppID(){
+    public String getAppID() {
         return appID;
+    }
+
+    public void setAppID(String appID) {
+        this.appID = appID;
     }
 
     public String getMchID() {
         return mchID;
     }
 
+    public void setMchID(String mchID) {
+        this.mchID = mchID;
+    }
+
     public String getKey() {
         return key;
     }
 
-    public IWXPayDomain getWXPayDomain(){
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public IWXPayDomain getWXPayDomain() {
         IWXPayDomain iwxPayDomain = new IWXPayDomain() {
             public void report(String domain, long elapsedTimeMillis, Exception ex) {
             }
@@ -49,7 +61,7 @@ public class WxpayConfig extends WXPayConfig {
         return iwxPayDomain;
     }
 
-    public void readCertData() throws Exception{
+    public void readCertData() throws Exception {
         //String certPath = "/path/to/apiclient_cert.p12";
         File file = new File(certPath);
         InputStream certStream = new FileInputStream(file);
@@ -63,25 +75,9 @@ public class WxpayConfig extends WXPayConfig {
             readCertData();
             ByteArrayInputStream certBis = new ByteArrayInputStream(this.certData);
             return certBis;
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
-    }
-
-    public void setAppID(String appID) {
-        this.appID = appID;
-    }
-
-    public void setMchID(String mchID) {
-        this.mchID = mchID;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public void setCertPath(String certPath) {
-        this.certPath = certPath;
     }
 
     public byte[] getCertData() {
@@ -94,6 +90,10 @@ public class WxpayConfig extends WXPayConfig {
 
     public String getCertPath() {
         return certPath;
+    }
+
+    public void setCertPath(String certPath) {
+        this.certPath = certPath;
     }
 
     public boolean isSandBox() {

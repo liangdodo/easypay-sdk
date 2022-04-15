@@ -1,4 +1,5 @@
 package com.nossiac.jx.easypay.service.impl;
+
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
@@ -14,8 +15,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class AlipayServiceImpl implements AlipayService {
+    AlipayClient alipayClient = null;
     private AlipayConfig alipayConfig;
-    AlipayClient alipayClient=null;
 
     public AlipayServiceImpl(AlipayConfig alipayConfig) {
         this.alipayClient = new DefaultAlipayClient(
@@ -40,11 +41,12 @@ public class AlipayServiceImpl implements AlipayService {
 
     /**
      * APP支付
+     *
      * @param
      * @return
      */
     @Override
-    public String appPay(AlipayRequest alipayPayRequest) throws AlipayApiException{
+    public String appPay(AlipayRequest alipayPayRequest) throws AlipayApiException {
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
@@ -57,9 +59,9 @@ public class AlipayServiceImpl implements AlipayService {
         model.setProductCode("QUICK_MSECURITY_PAY");
         request.setBizModel(model);
 
-        if(!alipayPayRequest.getNotifyUrl().isEmpty()){
+        if (!alipayPayRequest.getNotifyUrl().isEmpty()) {
             request.setNotifyUrl(alipayPayRequest.getNotifyUrl());
-        }else{
+        } else {
             request.setNotifyUrl(alipayConfig.getNotifyUrl());
         }
 
@@ -70,13 +72,14 @@ public class AlipayServiceImpl implements AlipayService {
 
     /**
      * PC网页支付
+     *
      * @param
      * @return
      * @throws AlipayApiException
      */
     @Override
-    public String pagePay(AlipayRequest alipayPayRequest) throws AlipayApiException{
-        AlipayTradePagePayRequest request= new AlipayTradePagePayRequest();
+    public String pagePay(AlipayRequest alipayPayRequest) throws AlipayApiException {
+        AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         AlipayTradePagePayModel model = new AlipayTradePagePayModel();
         model.setBody(alipayPayRequest.getBody());
         model.setSubject(alipayPayRequest.getSubject());
@@ -86,9 +89,9 @@ public class AlipayServiceImpl implements AlipayService {
         model.setProductCode("FAST_INSTANT_TRADE_PAY");
         request.setBizModel(model);
 
-        if(!alipayPayRequest.getNotifyUrl().isEmpty()){
+        if (!alipayPayRequest.getNotifyUrl().isEmpty()) {
             request.setNotifyUrl(alipayPayRequest.getNotifyUrl());
-        }else{
+        } else {
             request.setNotifyUrl(alipayConfig.getNotifyUrl());
         }
 
@@ -99,10 +102,11 @@ public class AlipayServiceImpl implements AlipayService {
 
     /**
      * WAP支付
+     *
      * @return
      */
-    public String wapPay(AlipayRequest alipayPayRequest) throws AlipayApiException{
-        AlipayTradeWapPayRequest request= new AlipayTradeWapPayRequest();
+    public String wapPay(AlipayRequest alipayPayRequest) throws AlipayApiException {
+        AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
         AlipayTradeWapPayModel model = new AlipayTradeWapPayModel();
         model.setBody(alipayPayRequest.getBody());
         model.setSubject(alipayPayRequest.getSubject());
@@ -113,9 +117,9 @@ public class AlipayServiceImpl implements AlipayService {
         request.setBizModel(model);
         request.setNotifyUrl(alipayPayRequest.getNotifyUrl());
 
-        if(!alipayPayRequest.getNotifyUrl().isEmpty()){
+        if (!alipayPayRequest.getNotifyUrl().isEmpty()) {
             request.setNotifyUrl(alipayPayRequest.getNotifyUrl());
-        }else{
+        } else {
             request.setNotifyUrl(alipayConfig.getNotifyUrl());
         }
 
@@ -125,13 +129,14 @@ public class AlipayServiceImpl implements AlipayService {
 
     /**
      * 支付宝二维码支付
+     *
      * @param alipayPayRequest
      * @return
      * @throws AlipayApiException
      */
-    public AlipayTradePrecreateResponse qrCodePay(AlipayRequest alipayPayRequest) throws AlipayApiException{
-        AlipayTradePrecreateRequest request=new AlipayTradePrecreateRequest();
-        AlipayTradePrecreateModel   model =new AlipayTradePrecreateModel();
+    public AlipayTradePrecreateResponse qrCodePay(AlipayRequest alipayPayRequest) throws AlipayApiException {
+        AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
+        AlipayTradePrecreateModel model = new AlipayTradePrecreateModel();
         model.setBody(alipayPayRequest.getBody());
         model.setSubject(alipayPayRequest.getSubject());
         model.setOutTradeNo(alipayPayRequest.getOutTradeNo());
@@ -139,9 +144,9 @@ public class AlipayServiceImpl implements AlipayService {
         model.setTotalAmount(String.valueOf(alipayPayRequest.getTotalAmount()));
         request.setBizModel(model);
 
-        if(!alipayPayRequest.getNotifyUrl().isEmpty()){
+        if (!alipayPayRequest.getNotifyUrl().isEmpty()) {
             request.setNotifyUrl(alipayPayRequest.getNotifyUrl());
-        }else{
+        } else {
             request.setNotifyUrl(alipayConfig.getNotifyUrl());
         }
 
@@ -149,15 +154,15 @@ public class AlipayServiceImpl implements AlipayService {
         return response;
     }
 
-    public boolean notifyCheck(Map<String,String> requestParams) throws AlipayApiException{
+    public boolean notifyCheck(Map<String, String> requestParams) throws AlipayApiException {
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
         //获取支付宝POST过来反馈信息
-        Map<String,String> params = new HashMap<String,String>();
+        Map<String, String> params = new HashMap<String, String>();
 
         //Map requestParams = request.getParameterMap();
-        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
             String name = (String) iter.next();
-            String valueStr=(String)requestParams.get(name);
+            String valueStr = (String) requestParams.get(name);
 
 
             /*String[] values = (String[]) requestParams.get(name);
@@ -176,7 +181,7 @@ public class AlipayServiceImpl implements AlipayService {
     }
 
     //异步通知
-    public AlipayNotify notify(Map<String,String> requestParams) throws AlipayApiException{
+    public AlipayNotify notify(Map<String, String> requestParams) throws AlipayApiException {
         AlipayNotify alipayNotify = new AlipayNotify();
         boolean signVerified = notifyCheck(requestParams);
 
@@ -199,7 +204,7 @@ public class AlipayServiceImpl implements AlipayService {
         return alipayNotify;
     }
 
-    public AlipayTradeRefundResponse refund(AlipayRefund alipayRefund) throws AlipayApiException{
+    public AlipayTradeRefundResponse refund(AlipayRefund alipayRefund) throws AlipayApiException {
 
        /* // (必填) 外部订单号，需要退款交易的商户外部订单号
         String outTradeNo = "tradepay14817938139942440181";
@@ -217,19 +222,19 @@ public class AlipayServiceImpl implements AlipayService {
         // (必填) 商户门店编号，退款情况下可以为商家后台提供退款权限判定和统计等作用，详询支付宝技术支持
         String storeId = "test_store_id";*/
 
-        AlipayTradeRefundRequest request =new AlipayTradeRefundRequest();
-        AlipayTradeRefundModel model=new AlipayTradeRefundModel();
+        AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
+        AlipayTradeRefundModel model = new AlipayTradeRefundModel();
 
-        if(!alipayRefund.getTradeNo().isEmpty()){
+        if (!alipayRefund.getTradeNo().isEmpty()) {
             model.setTradeNo(alipayRefund.getTradeNo());
-        }else{
+        } else {
             model.setOutTradeNo(alipayRefund.getOutTradeNo());
         }
 
         model.setRefundAmount(String.valueOf(alipayRefund.getRefundAmount()));
         model.setOutRequestNo(alipayRefund.getOutRequestNo());
 
-        if(!alipayRefund.getRefundReason().isEmpty()){
+        if (!alipayRefund.getRefundReason().isEmpty()) {
             model.setRefundReason(alipayRefund.getRefundReason());
         }
 
@@ -237,13 +242,13 @@ public class AlipayServiceImpl implements AlipayService {
         return alipayClient.execute(request);
     }
 
-    public AlipayTradeQueryResponse orderQuery(AlipayQuery alipayQuery) throws AlipayApiException{
-        AlipayTradeQueryRequest request=new AlipayTradeQueryRequest();
-        AlipayTradeQueryModel model=new AlipayTradeQueryModel();
+    public AlipayTradeQueryResponse orderQuery(AlipayQuery alipayQuery) throws AlipayApiException {
+        AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
+        AlipayTradeQueryModel model = new AlipayTradeQueryModel();
 
-        if(!alipayQuery.getTradeNo().isEmpty()){
+        if (!alipayQuery.getTradeNo().isEmpty()) {
             model.setTradeNo(alipayQuery.getTradeNo());
-        }else{
+        } else {
             model.setOutTradeNo(alipayQuery.getOutTradeNo());
         }
 
@@ -252,13 +257,13 @@ public class AlipayServiceImpl implements AlipayService {
     }
 
 
-    public AlipayTradeFastpayRefundQueryResponse refundQuery(AlipayQuery alipayQuery) throws AlipayApiException{
+    public AlipayTradeFastpayRefundQueryResponse refundQuery(AlipayQuery alipayQuery) throws AlipayApiException {
         AlipayTradeFastpayRefundQueryRequest request = new AlipayTradeFastpayRefundQueryRequest();
-        AlipayTradeFastpayRefundQueryModel model =new AlipayTradeFastpayRefundQueryModel();
+        AlipayTradeFastpayRefundQueryModel model = new AlipayTradeFastpayRefundQueryModel();
 
-        if(!alipayQuery.getTradeNo().isEmpty()){
+        if (!alipayQuery.getTradeNo().isEmpty()) {
             model.setTradeNo(alipayQuery.getTradeNo());
-        }else{
+        } else {
             model.setOutTradeNo(alipayQuery.getOutTradeNo());
         }
 
@@ -267,30 +272,30 @@ public class AlipayServiceImpl implements AlipayService {
         return alipayClient.execute(request);
     }
 
-    public String secondsToTimeoutExpress(int timeout){
-        int day     = (int)(timeout/3600/24);
-        int hours   = (int)((timeout-day*3600*24)/3600);
-        int minute  = (int)((timeout-day*3600*24-hours*3600)/60);
+    public String secondsToTimeoutExpress(int timeout) {
+        int day = (int) (timeout / 3600 / 24);
+        int hours = (int) ((timeout - day * 3600 * 24) / 3600);
+        int minute = (int) ((timeout - day * 3600 * 24 - hours * 3600) / 60);
         //int seconds = (long)(timeout-day*3600*24-hours*3600-minute*60);
 
-        if(0==timeout || timeout < 60){
+        if (0 == timeout || timeout < 60) {
             return "1c";
         }
 
-        if(day > 15){
-            day=15;
+        if (day > 15) {
+            day = 15;
         }
 
-        if(day > 0){
-            return day+"d";
+        if (day > 0) {
+            return day + "d";
         }
 
-        if(hours > 0){
-            return hours+"h";
+        if (hours > 0) {
+            return hours + "h";
         }
 
-        if(minute > 0){
-            return minute+"m";
+        if (minute > 0) {
+            return minute + "m";
         }
 
         return "";

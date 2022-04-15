@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class EasyQueryResponse {
-    private int code=-1;
-    private String message="";
+    private int code = -1;
+    private String message = "";
     private Object data;
 }

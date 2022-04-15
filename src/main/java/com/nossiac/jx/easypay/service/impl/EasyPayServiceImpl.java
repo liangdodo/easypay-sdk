@@ -13,6 +13,7 @@ import com.nossiac.jx.easypay.service.EasyPayService;
 import com.nossiac.jx.easypay.service.WxpayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 public class EasyPayServiceImpl implements EasyPayService {
@@ -25,15 +26,19 @@ public class EasyPayServiceImpl implements EasyPayService {
 
     //设置支付宝配置信息
     public void setAlipayConfig(AlipayConfig alipayConfig) {
-        alipayService=new AlipayServiceImpl(alipayConfig);
+        alipayService = new AlipayServiceImpl(alipayConfig);
     }
 
-    public void setWxpayConfig(WxpayConfig wxpayConfig){
+    public void setWxpayConfig(WxpayConfig wxpayConfig) {
         wxpayService = new WxpayServiceImpl(wxpayConfig);
     }
 
     public AlipayService getAlipayService() {
         return alipayService;
+    }
+
+    public void setAlipayService(AlipayService alipayService) {
+        this.alipayService = alipayService;
     }
 
     public EasyPayRequest getEasyPayRequest() {
@@ -42,10 +47,6 @@ public class EasyPayServiceImpl implements EasyPayService {
 
     public void setEasyPayRequest(EasyPayRequest easyPayRequest) {
         this.easyPayRequest = easyPayRequest;
-    }
-
-    public void setAlipayService(AlipayService alipayService) {
-        this.alipayService = alipayService;
     }
 
     public EasyPayTypeEnum getEasyPayType() {
@@ -72,7 +73,7 @@ public class EasyPayServiceImpl implements EasyPayService {
         this.wxpayService = wxpayService;
     }
 
-    public Object pay() throws EasyPayException{
+    public Object pay() throws EasyPayException {
 
         //微信支付
         if (EasyPayPlatformEnum.WXPAY == easyPayType.getPlatform()) {
@@ -110,14 +111,14 @@ public class EasyPayServiceImpl implements EasyPayService {
                     return wxpayService.mwebPay(wxpayRequest);
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new EasyPayException(e.getMessage());
             }
 
         } else if (EasyPayPlatformEnum.ALIPAY == easyPayType.getPlatform()) {//支付宝支付
 
             //创建支付宝支付请求对象
-            AlipayRequest alipayRequest=new AlipayRequest();
+            AlipayRequest alipayRequest = new AlipayRequest();
             alipayRequest.setOutTradeNo(easyPayRequest.getTradeNo());//订单号
             alipayRequest.setTotalAmount(easyPayRequest.getAmount());//金额
             alipayRequest.setSubject(easyPayRequest.getSubject());//标题
@@ -143,14 +144,14 @@ public class EasyPayServiceImpl implements EasyPayService {
                 }
 
                 //二维码支付
-                if(easyPayType == EasyPayTypeEnum.ALIPAY_QRCODE){
+                if (easyPayType == EasyPayTypeEnum.ALIPAY_QRCODE) {
                     return alipayService.qrCodePay(alipayRequest);
                 }
 
-            }catch (AlipayApiException e){
+            } catch (AlipayApiException e) {
                 throw new EasyPayException(e.getMessage());
             }
-        }else{
+        } else {
             throw new EasyPayException("未知的支付方式");
         }
 
@@ -158,7 +159,7 @@ public class EasyPayServiceImpl implements EasyPayService {
     }
 
     //以Map方式接收的参数
-    public EasyPayNotify notify(Map<String,String> notifyData) throws EasyPayException{
+    public EasyPayNotify notify(Map<String, String> notifyData) throws EasyPayException {
 
         //支付宝支付
         if (EasyPayPlatformEnum.ALIPAY == easyPayPlatform) {//支付宝支付
@@ -175,7 +176,7 @@ public class EasyPayServiceImpl implements EasyPayService {
                     easyPayNotify.setAlipayNotify(alipayNotify);
                     return easyPayNotify;
                 }
-            }catch (AlipayApiException e){
+            } catch (AlipayApiException e) {
                 throw new EasyPayException(e.getCause().getMessage());
             }
 
@@ -184,10 +185,10 @@ public class EasyPayServiceImpl implements EasyPayService {
     }
 
     //以String方式接收的参数
-    public EasyPayNotify notify(String notifyData) throws EasyPayException{
+    public EasyPayNotify notify(String notifyData) throws EasyPayException {
 
         //微信支付
-        if(EasyPayPlatformEnum.WXPAY == easyPayPlatform){
+        if (EasyPayPlatformEnum.WXPAY == easyPayPlatform) {
             try {
                 WxpayNotify wxpayNotify = wxpayService.notify(notifyData);
 
@@ -202,7 +203,7 @@ public class EasyPayServiceImpl implements EasyPayService {
 
                     return easyPayNotify;
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new EasyPayException(e.getMessage());
             }
         }
@@ -210,12 +211,12 @@ public class EasyPayServiceImpl implements EasyPayService {
         return null;
     }
 
-    public EasyRefundResponse refund(EasyRefundRequest easyRefundRequest) throws EasyPayException{
+    public EasyRefundResponse refund(EasyRefundRequest easyRefundRequest) throws EasyPayException {
 
-        EasyRefundResponse easyRefundResponse=new EasyRefundResponse();
+        EasyRefundResponse easyRefundResponse = new EasyRefundResponse();
         easyRefundResponse.setCode(-1);
 
-        if(easyPayPlatform == EasyPayPlatformEnum.WXPAY) {
+        if (easyPayPlatform == EasyPayPlatformEnum.WXPAY) {
 
             try {
                 WxpayRefund wxpayRefund = new WxpayRefund();
@@ -225,28 +226,28 @@ public class EasyPayServiceImpl implements EasyPayService {
                 wxpayRefund.setOutRefundNo(easyRefundRequest.getRefundNo());
                 wxpayRefund.setRefundFee(easyRefundRequest.getRefundAmount());
                 wxpayRefund.setRefundDesc(easyRefundRequest.getRefundCause());
-                Map<String,String> resMap=wxpayService.refund(wxpayRefund);
+                Map<String, String> resMap = wxpayService.refund(wxpayRefund);
 
 
-                if(resMap!=null){
-                    if(resMap.get("return_code").equals("SUCCESS") && resMap.get("result_code").equals("SUCCESS")){
+                if (resMap != null) {
+                    if (resMap.get("return_code").equals("SUCCESS") && resMap.get("result_code").equals("SUCCESS")) {
                         easyRefundResponse.setCode(0);
                         easyRefundResponse.setMessage(resMap.get("err_code_des"));
                         easyRefundResponse.setTradeNo(resMap.get("out_trade_no"));
-                        easyRefundResponse.setRefundNo(resMap.get( "out_refund_no"));
+                        easyRefundResponse.setRefundNo(resMap.get("out_refund_no"));
                         easyRefundResponse.setPayRefundNo(resMap.get("refund_id"));
-                        easyRefundResponse.setRefundAmount(Integer.valueOf(resMap.get("refund_fee"))/100.00F);
-                    }else{
-                        throw new EasyPayException("err_code="+resMap.get("err_code")+","+"err_code_des="+resMap.get("err_code_des"));
+                        easyRefundResponse.setRefundAmount(Integer.valueOf(resMap.get("refund_fee")) / 100.00F);
+                    } else {
+                        throw new EasyPayException("err_code=" + resMap.get("err_code") + "," + "err_code_des=" + resMap.get("err_code_des"));
                     }
                 }
 
             } catch (Exception e) {
                 throw new EasyPayException(e.getMessage());
             }
-        }else if(easyPayPlatform == EasyPayPlatformEnum.ALIPAY){
+        } else if (easyPayPlatform == EasyPayPlatformEnum.ALIPAY) {
 
-            try{
+            try {
 
                 AlipayRefund alipayRefund = new AlipayRefund();
                 alipayRefund.setOutTradeNo(easyRefundRequest.getTradeNo());//商户单号
@@ -257,16 +258,16 @@ public class EasyPayServiceImpl implements EasyPayService {
                 AlipayTradeRefundResponse alipayTradeRefundResponse = alipayService.refund(alipayRefund);
 
 
-                if(alipayTradeRefundResponse.isSuccess()){
+                if (alipayTradeRefundResponse.isSuccess()) {
                     easyRefundResponse.setCode(0);
-                    easyRefundResponse.setMessage(alipayTradeRefundResponse.getMsg()+"->"+alipayTradeRefundResponse.getSubMsg());
+                    easyRefundResponse.setMessage(alipayTradeRefundResponse.getMsg() + "->" + alipayTradeRefundResponse.getSubMsg());
                     //System.out.println(new ObjectMapper().writeValueAsString(alipayResponse));
-                }else{
-                    throw new EasyPayException("code="+alipayTradeRefundResponse.getCode()+",sub_code="+alipayTradeRefundResponse.getSubCode()+
-                            ",msg="+alipayTradeRefundResponse.getMsg()+",sub_msg="+alipayTradeRefundResponse.getSubMsg());
+                } else {
+                    throw new EasyPayException("code=" + alipayTradeRefundResponse.getCode() + ",sub_code=" + alipayTradeRefundResponse.getSubCode() +
+                            ",msg=" + alipayTradeRefundResponse.getMsg() + ",sub_msg=" + alipayTradeRefundResponse.getSubMsg());
                 }
 
-            }catch (AlipayApiException e){
+            } catch (AlipayApiException e) {
                 throw new EasyPayException(e.getMessage());
             }
         }
@@ -276,45 +277,45 @@ public class EasyPayServiceImpl implements EasyPayService {
 
     @Override
     public EasyQueryResponse orderQuery(EasyQueryRequest easyQueryRequest) throws EasyPayException {
-        EasyQueryResponse easyQueryResponse=new EasyQueryResponse();
+        EasyQueryResponse easyQueryResponse = new EasyQueryResponse();
 
-        if(easyPayPlatform == EasyPayPlatformEnum.WXPAY) {
-            WxpayQuery wxpayQuery=new WxpayQuery();
+        if (easyPayPlatform == EasyPayPlatformEnum.WXPAY) {
+            WxpayQuery wxpayQuery = new WxpayQuery();
             wxpayQuery.setOutTradeNo(easyQueryRequest.getTradeNo());
             wxpayQuery.setTransactionId(easyQueryRequest.getPayTradeNo());
 
             try {
-                Map<String,String> responseMap= wxpayService.orderQuery(wxpayQuery);
-                String returnCode=responseMap.get("return_code");
-                String returnMsg=responseMap.get("return_msg");
+                Map<String, String> responseMap = wxpayService.orderQuery(wxpayQuery);
+                String returnCode = responseMap.get("return_code");
+                String returnMsg = responseMap.get("return_msg");
 
-                if(null!=returnMsg){
+                if (null != returnMsg) {
                     easyQueryResponse.setMessage(returnMsg);
                 }
 
-                if(null!=returnCode && returnCode.equals("SUCCESS")){
+                if (null != returnCode && returnCode.equals("SUCCESS")) {
                     easyQueryResponse.setCode(0);
                     easyQueryResponse.setData(responseMap);
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new EasyPayException(e.getMessage());
             }
 
-        } else if(easyPayPlatform == EasyPayPlatformEnum.ALIPAY){
-            AlipayQuery alipayQuery=new AlipayQuery();
+        } else if (easyPayPlatform == EasyPayPlatformEnum.ALIPAY) {
+            AlipayQuery alipayQuery = new AlipayQuery();
             alipayQuery.setOutTradeNo(easyQueryRequest.getTradeNo());
             alipayQuery.setTradeNo(easyQueryRequest.getPayTradeNo());
 
             try {
-                 AlipayTradeQueryResponse alipayTradeQueryResponse =alipayService.orderQuery(alipayQuery);
+                AlipayTradeQueryResponse alipayTradeQueryResponse = alipayService.orderQuery(alipayQuery);
 
-                 if(alipayTradeQueryResponse.isSuccess()){
-                     easyQueryResponse.setCode(0);
-                     easyQueryResponse.setData(alipayTradeQueryResponse);
-                 }
+                if (alipayTradeQueryResponse.isSuccess()) {
+                    easyQueryResponse.setCode(0);
+                    easyQueryResponse.setData(alipayTradeQueryResponse);
+                }
 
-            }catch (AlipayApiException e){
+            } catch (AlipayApiException e) {
                 throw new EasyPayException(e.getMessage());
             }
         }
@@ -324,49 +325,49 @@ public class EasyPayServiceImpl implements EasyPayService {
 
     @Override
     public EasyQueryResponse refundQuery(EasyQueryRequest easyQueryRequest) throws EasyPayException {
-        EasyQueryResponse easyQueryResponse=new EasyQueryResponse();
+        EasyQueryResponse easyQueryResponse = new EasyQueryResponse();
 
-        if(easyPayPlatform == EasyPayPlatformEnum.WXPAY) {
+        if (easyPayPlatform == EasyPayPlatformEnum.WXPAY) {
 
-            WxpayQuery wxpayQuery=new WxpayQuery();
+            WxpayQuery wxpayQuery = new WxpayQuery();
             wxpayQuery.setOutTradeNo(easyQueryRequest.getTradeNo());
             wxpayQuery.setTransactionId(easyQueryRequest.getPayTradeNo());
             wxpayQuery.setOutRefundNo(easyQueryRequest.getRefundNo());
             wxpayQuery.setRefundId(easyQueryRequest.getPayRefundNo());
 
             try {
-                Map<String,String> responseMap= wxpayService.refundQuery(wxpayQuery);
-                String returnCode=responseMap.get("return_code");
-                String returnMsg=responseMap.get("return_msg");
+                Map<String, String> responseMap = wxpayService.refundQuery(wxpayQuery);
+                String returnCode = responseMap.get("return_code");
+                String returnMsg = responseMap.get("return_msg");
 
-                if(null!=returnMsg){
+                if (null != returnMsg) {
                     easyQueryResponse.setMessage(returnMsg);
                 }
 
-                if(null!=returnCode && returnCode.equals("SUCCESS")){
+                if (null != returnCode && returnCode.equals("SUCCESS")) {
                     easyQueryResponse.setCode(0);
                     easyQueryResponse.setData(responseMap);
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new EasyPayException(e.getMessage());
             }
 
-        } else if(easyPayPlatform == EasyPayPlatformEnum.ALIPAY){
-            AlipayQuery alipayQuery=new AlipayQuery();
+        } else if (easyPayPlatform == EasyPayPlatformEnum.ALIPAY) {
+            AlipayQuery alipayQuery = new AlipayQuery();
             alipayQuery.setOutTradeNo(easyQueryRequest.getTradeNo());
             alipayQuery.setTradeNo(easyQueryRequest.getPayTradeNo());
             alipayQuery.setOutRequestNo(easyQueryRequest.getRefundNo());
 
             try {
-                AlipayTradeFastpayRefundQueryResponse alipayTradeFastpayRefundQueryResponse =alipayService.refundQuery(alipayQuery);
+                AlipayTradeFastpayRefundQueryResponse alipayTradeFastpayRefundQueryResponse = alipayService.refundQuery(alipayQuery);
 
-                if(alipayTradeFastpayRefundQueryResponse.isSuccess()){
+                if (alipayTradeFastpayRefundQueryResponse.isSuccess()) {
                     easyQueryResponse.setCode(0);
                     easyQueryResponse.setData(alipayTradeFastpayRefundQueryResponse);
                 }
 
-            }catch (AlipayApiException e){
+            } catch (AlipayApiException e) {
                 throw new EasyPayException(e.getMessage());
             }
         }
